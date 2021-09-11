@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>Test Map</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <style>
+  /* マップを表示する div 要素の高さを必ず明示的に指定します。 */
+  #map {
+    height: 500px;
+    width: 500px;
+    margin: 0 auto;
+  }
+  </style>
+  </head>
+
+  <body>
+<!--
+  <input type="button" value="button" onclick="getCode()"><br>
+  <form>
+      <input type="text" id="input_lat" value=""><br>
+      <input type="text" id="input_lng" value="">
+
+  </form> -->
+  <div id="map"></div><!-- 地図を表示する div 要素（id="map"）-->
+  <script>
+    var map;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 26.511009805240924, lng:128.04078214031085},
+        zoom: 8
+      });
+    }
+
+    function getCode() {
+      var latlng = map.getCenter();
+      var lat = latlng.lat();
+      var lng = latlng.lng();
+
+      document.getElementById("input_lat").value = lat;
+      document.getElementById("input_lng").value = lng;
+    }
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP-JIYw_UYhDVgteBa8yE-ZI-nn5KsuoY&callback=initMap" async defer></script>
+
+</body>
+</html>

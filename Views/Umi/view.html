@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Googleマップ</title>
+    <style>
+    /* マップを表示する div 要素の高さを必ず明示的に指定します。 */
+    #map {
+      height: 500px;
+      width: 500px;
+      margin: 0 auto;
+    }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- <div id="header">Google Maps</div> -->
+    <table>
+      <tr>
+        <td><div id="target"></div></td>
+        <td><div id="sidebar"></div></td>
+      </tr>
+    </table>
+    <div id="map"></div><!-- 地図を表示する div 要素（id="map"）-->
+
+    <!-- MarkerCluster -->
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
+    <!-- Google MAP API KEY -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?language=ja&region=JP&key=API keキーを指定する&callback=initMap" async defer></script> -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP-JIYw_UYhDVgteBa8yE-ZI-nn5KsuoY&callback=initMap" async defer></script>
+    <!-- <script src="https://code.jquery.com/jquery-2.1.1.js" integrity="sha256-FA/0OOqu3gRvHOuidXnRbcmAWVcJORhz+pv3TX2+U6w=" crossorigin="anonymous"></script> -->
+
+    <script>
+
+    function initMap() {
+  　　　　　 map = new google.maps.Map(document.getElementById('map'), {
+  　　　    center: {lat: latitude, lng:longitude},
+           zoom: 15
+         });
+       var markerD = [{'lat': latitude, 'lng': longitude}];
+       setMarker(markerD);
+    }
+
+    // var map;
+    // function initMap() {
+    //   map = new google.maps.Map(document.getElementById('map'), {
+    //     center: {lat: 26.511009805240924, lng:128.04078214031085},
+    //     zoom: 8
+    //   });
+    // }
+
+
+      // function initMap() {
+      //
+      //   //マップ初期表示の位置設定
+      //   var target = document.getElementById('target');
+      //   center: {lat: 26.511009805240924, lng:128.04078214031085},
+      //
+      //   //マップ表示
+      //   map = new google.maps.Map(target, {
+      //     center: centerp,
+      //     zoom: 10,
+      //   });
+      //
+      // };
+
+      var markerD = [];
+
+      // DB情報の取得(ajax)
+      // $(function(){
+      //   $.ajax({
+      //     type: "POST",
+      //     url: "viewmap.php",
+      //     dataType: "json",
+      //     success: function(data){
+      //       markerD = data;
+      //       setMarker(markerD);
+      //     },
+      //     error: function(XMLHttpRequest, textStatus, errorThrown){
+      //       alert('Error : ' + errorThrown);
+      //     }
+      //   });
+      // });
+
+      var map;
+      var marker = [];
+      var infoWindow = [];
+
+      function setMarker(markerData) {
+
+        // console.log(markerData);
+        // console.log(markerData.length);
+
+        //マーカー生成
+        var sidebar_html = "";
+        var icon;
+
+        for (var i = 0; i < markerData.length; i++) {
+
+          var latNum = parseFloat(markerData[i]['lat']);
+          var lngNum = parseFloat(markerData[i]['lng']);
+
+          // マーカー位置セット
+          var markerLatLng = new google.maps.LatLng({
+            lat: latNum,
+            lng: lngNum
+          });
+          // マーカーアイコンのセット(行った所はアイコンを変える)
+          // if (markerData[i]['status'] === 'went'){
+          //   icon = new google.maps.MarkerImage('./icon_color/went' + markerData[i]['classNo'] + '.png');
+          // } else {
+          //   icon = new google.maps.MarkerImage('./icon_color/list' + markerData[i]['classNo'] + '.png');
+          // }
+          // マーカーのセット
+          marker[i] = new google.maps.Marker({
+            position: markerLatLng,          // マーカーを立てる位置を指定
+            map: map,                        // マーカーを立てる地図を指定
+            icon: icon                       // アイコン指定
+          });
+          // 吹き出しの追加
+          // infoWindow[i] = new google.maps.InfoWindow({
+          //   content: markerData[i]['class'] + '：' + markerData[i]['name'] + '<br><br>' + markerData[i]['text'] + '<br><br>' + markerData[i]['img']
+          // });
+          // // サイドバー
+          // var wantStar;
+          // if(markerData[i]['status'] === 'went') {
+          //   wantStar = '●';
+          // } else if(markerData[i]['status'] === 'want') {
+          //   wantStar = '○';
+          // } else {
+          //   wantStar = '・';
+          // }
+          // sidebar_html += wantStar + '<a href="javascript:myclick(' + i + ')">' + markerData[i]['name'] + '<\/a><br />';
+          // // マーカーにクリックイベントを追加
+          // markerEvent(i);
+        }
+
+        // Marker clusterの追加
+        var markerCluster = new MarkerClusterer(
+          map,
+          marker,
+          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'}
+        );
+
+        // サイドバー
+        document.getElementById("sidebar").innerHTML = sidebar_html;
+      }
+
+      var openWindow;
+
+      function markerEvent(i) {
+        marker[i].addListener('click', function() {
+          myclick(i);
+        });
+      }
+
+      function myclick(i) {
+        if(openWindow){
+          openWindow.close();
+        }
+        infoWindow[i].open(map, marker[i]);
+        openWindow = infoWindow[i];
+      }
+
+    </script>
+
+  </body>
+</html>
